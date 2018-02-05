@@ -1,0 +1,28 @@
+{
+  "name": "bsbuilder",
+  "version": "1.0.0",
+  "description": " builder & optimizer for Bootstrap studio",
+  "author": {
+    "name":"Arnaud Bérard (Mist. GraphX)",
+    "url" : "https://www.mister-graphx.com/"
+  },
+  "repository": {
+     "type" : "git",
+     "url" : "https://github.com/mistergraphx/BootstrapStudioBuilder"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.18.13",
+    "gulp": "^3.9.1",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-image-resize": "^0.13.0",
+    "gulp-imagemin": "^4.0.0",
+    "gulp-postcss": "^7.0.0",
+    "postcss": "^6.0.14",
+    "postcss-calc": "^6.0.1",
+    "postcss-css-variables": "^0.8.0",
+    "postcss-cssnext": "^3.0.2",
+    "postcss-import": "^11.0.0",
+    "postcss-url": "^7.3.0"
+  }
+}
