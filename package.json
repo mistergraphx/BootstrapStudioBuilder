@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": " builder & optimizer for Bootstrap studio",
   "author": {
-    "name":"Arnaud Bérard (Mist. GraphX)",
-    "url" : "https://www.mister-graphx.com/"
+    "name": "Arnaud Bérard (Mist. GraphX)",
+    "url": "https://www.mister-graphx.com/"
   },
   "repository": {
-     "type" : "git",
-     "url" : "https://github.com/mistergraphx/BootstrapStudioBuilder"
+    "type": "git",
+    "url": "https://github.com/mistergraphx/BootstrapStudioBuilder"
   },
   "license": "ISC",
   "dependencies": {
@@ -20,7 +20,7 @@
     "gulp-postcss": "^7.0.0",
     "postcss": "^6.0.14",
     "postcss-calc": "^6.0.1",
-    "postcss-css-variables": "^0.8.0",
+    "postcss-css-variables": "git+https://github.com/CodyHouse/postcss-css-variables",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^11.0.0",
     "postcss-url": "^7.3.0"
