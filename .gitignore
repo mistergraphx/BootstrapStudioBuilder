@@ -1,6 +1,9 @@
 
 # Specific
 
+/_BACKUPS/**
+!/_BACKUPS/_readme.md
+
 /_COMPONENTS/**
 !/_COMPONENTS/_readme.md
 
