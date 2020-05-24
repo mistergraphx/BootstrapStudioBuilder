@@ -2,13 +2,18 @@ var gulp = require("gulp");
 
 var imagemin = require('gulp-imagemin');
 var imageResize = require('gulp-image-resize');
+
+global.IMAGES_FORMATS = 'jpg,jpeg,svg,gif';
+/**
+ * images task
+ */
 gulp.task('images', function () {
-    return gulp.src('./exports/assets/img/**/*.{jpg,jpeg,png,gif,svg}')
+  return gulp.src('./exports/assets/img/**/*.{' + IMAGES_FORMATS + '}')
         .pipe(imagemin([
-				imagemin.svgo({plugins: [{removeViewBox: true}]})
-		], {
-			verbose: true
-		}))
+    				imagemin.svgo({plugins: [{removeViewBox: true}]})
+    		], {
+    			verbose: true
+    		}))
         .pipe(imageResize({
           width : 1200,
           height : 1200,
@@ -39,27 +44,27 @@ var cssnext = require("postcss-cssnext");
 gulp.task('styles', function () {
     return gulp.src('./exports/**/*.css')
         .pipe(postcss([
-			require("postcss-import")(),
-			// https://github.com/postcss/postcss-url
-			require("postcss-url")(),
-			require("postcss-cssnext")({
-				browsers: ["> 1%","last 2 versions"],
-				features: {
-					customProperties: {
-						// true: les var() sont conservée pour les navigateur les supportant et calculé en fallback
-						// 'computed' les var() sont calculées mais root est conservé
-						preserve: "computed" 
-					}
-				}
-			}),
-		]))
+    			require("postcss-import")(),
+    			// https://github.com/postcss/postcss-url
+    			require("postcss-url")(),
+    			require("postcss-cssnext")({
+    				browsers: ["> 1%","last 2 versions"],
+    				features: {
+    					customProperties: {
+    						// true: les var() sont conservée pour les navigateur les supportant et calculé en fallback
+    						// 'computed' les var() sont calculées mais root est conservé
+    						preserve: "computed"
+    					}
+    				}
+    			}),
+    		]))
         .pipe(gulp.dest('./build'));
 });
 
 // https://www.npmjs.com/package/browser-sync
 var browserSync = require('browser-sync').create();
 gulp.task('build', ['styles','images','scripts','html'], function(){
-	
+
 	browserSync.init({
         server: "./build"
     });
