@@ -21,7 +21,7 @@ log.info('Starting task in mode : ' + process.env.NODE_ENV );
 /**
  * clean
  */
-function clean(){
+export function clean(){
   return del([
       _BUID_PATH + '**/*.*'
   ]);
@@ -29,7 +29,7 @@ function clean(){
 /**
  * images
  */
-function images(cb){
+export function images(){
   return gulp.src('./exports/assets/img/**/*.{' + _IMAGES_FORMATS + '}')
         .pipe(imagemin([
           gifsicle({interlaced: true}),
@@ -49,14 +49,12 @@ function images(cb){
           })
         ]))
         .pipe(gulp.dest(_BUID_PATH));
-
-  cb();
 }
 /**
  * scripts
  *
  */
-function scripts(cb){
+export function scripts(){
   return gulp.src('./exports/**/*.js')
           .pipe(gulp.dest(_BUID_PATH));
 }
@@ -68,11 +66,10 @@ function scripts(cb){
 
 import htmlmin from 'gulp-htmlmin';
 
-function html(cb) {
+export function html() {
   return gulp.src('./exports/**/*.html')
       .pipe(htmlmin({collapseWhitespace: true}))
       .pipe(gulp.dest(_BUID_PATH));
-  cb();
 }
 /**
  * styles
@@ -81,16 +78,17 @@ function html(cb) {
  *
  */
 import postcss from 'gulp-postcss';
-//var partialImport = require("postcss-partial-import");
-import cssnext from 'postcss-cssnext';
+import postcssImport from 'postcss-import';
+// https://github.com/postcss/postcss-url
+import postcssUrl from 'postcss-url';
 // http://putaindecode.io/fr/articles/css/preprocesseurs/cssnext/
-function styles(cb) {
+import cssnext from 'postcss-cssnext';
+export function styles() {
   return gulp.src('./exports/**/*.css')
       .pipe(postcss([
-        require("postcss-import")(),
-        // https://github.com/postcss/postcss-url
-        require("postcss-url")(),
-        require("postcss-cssnext")({
+        postcssImport(),
+        postcssUrl(),
+        cssnext({
           browsers: ["> 1%","last 2 versions"],
           features: {
             customProperties: {
@@ -99,12 +97,10 @@ function styles(cb) {
               preserve: "computed"
             }
           }
-        }),
+        })
       ]))
       .pipe(gulp.dest(_BUID_PATH));
-  cb();
 }
-
 
 // https://www.npmjs.com/package/browser-sync
 // var browserSync = require('browser-sync').create();
@@ -124,9 +120,4 @@ function styles(cb) {
 // });
 const build = gulp.series(clean, gulp.parallel(images,scripts,styles,html));
 
-exports.scripts = scripts;
-exports.html = html;
-exports.styles = styles;
-exports.images = images;
-exports.build = build;
-exports.default = build;
+export default build;
