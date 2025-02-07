@@ -16,7 +16,7 @@
     "browser-sync": "^2.27.9",
     "del": "^6.0.0",
     "fancy-log": "^2.0.0",
-    "gulp": "^4.0.0",
+    "gulp": "^4.0.2",
     "gulp-htmlmin": "^5.0.1",
     "gulp-image-resize": "^0.13.0",
     "gulp-imagemin": "^8.0.0",
