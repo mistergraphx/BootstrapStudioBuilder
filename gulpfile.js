@@ -1,8 +1,6 @@
 import gulp from 'gulp';
 import log from 'fancy-log';
 import del from 'del';
-import imagemin, {gifsicle, mozjpeg, optipng, svgo} from 'gulp-imagemin';
-import imageResize from 'gulp-image-resize';
 
 global._SRC_PATH = 'exports/';
 global._BUID_PATH = 'build/';
@@ -21,7 +19,7 @@ log.info('Starting task in mode : ' + process.env.NODE_ENV );
 /**
  * clean
  */
-export function clean(){
+export const clean = async () => {
   return del([
       _BUID_PATH + '**/*.*'
   ]);
@@ -29,7 +27,13 @@ export function clean(){
 /**
  * images
  */
-export function images(){
+export const images = async () => {
+  const imagemin = (await import("gulp-imagemin")).default;
+  const gifsicle = (await import("imagemin-gifsicle")).default;
+  const mozjpeg = (await import("imagemin-mozjpeg")).default;
+  const optipng = (await import("imagemin-optipng")).default;
+  const svgo = (await import("imagemin-svgo")).default;
+  //import imagemin, {gifsicle, mozjpeg, optipng, svgo} from 'gulp-imagemin';
   return gulp.src('./exports/assets/img/**/*.{' + _IMAGES_FORMATS + '}')
         .pipe(imagemin([
           gifsicle({interlaced: true}),
@@ -42,7 +46,7 @@ export function images(){
                 active: true
               },
               {
-                name: 'cleanupIDs',
+                name: 'cleanupIds',
                 active: false
               }
             ]
@@ -54,7 +58,7 @@ export function images(){
  * scripts
  *
  */
-export function scripts(){
+export const scripts = async () => {
   return gulp.src('./exports/**/*.js')
           .pipe(gulp.dest(_BUID_PATH));
 }
@@ -66,7 +70,7 @@ export function scripts(){
 
 import htmlmin from 'gulp-htmlmin';
 
-export function html() {
+export const html = async () => {
   return gulp.src('./exports/**/*.html')
       .pipe(htmlmin({collapseWhitespace: true}))
       .pipe(gulp.dest(_BUID_PATH));
@@ -83,7 +87,7 @@ import postcssImport from 'postcss-import';
 import postcssUrl from 'postcss-url';
 // http://putaindecode.io/fr/articles/css/preprocesseurs/cssnext/
 import cssnext from 'postcss-cssnext';
-export function styles() {
+export const styles = async () => {
   return gulp.src('./exports/**/*.css')
       .pipe(postcss([
         postcssImport(),
@@ -119,5 +123,5 @@ export function styles() {
 // 	gulp.watch('./exports/assets/**/*.css',['styles']);
 // });
 const build = gulp.series(clean, gulp.parallel(images,scripts,styles,html));
-
+// const build = gulp.series(clean);
 export default build;
