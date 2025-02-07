@@ -1,9 +1,8 @@
-const gulp = require("gulp");
-const log  = require('fancy-log');
-const del = require('del');
-
-const imagemin = require('gulp-imagemin');
-const imageResize = require('gulp-image-resize');
+import gulp from 'gulp';
+import log from 'fancy-log';
+import del from 'del';
+import imagemin, {gifsicle, mozjpeg, optipng, svgo} from 'gulp-imagemin';
+import imageResize from 'gulp-image-resize';
 
 global._SRC_PATH = 'exports/';
 global._BUID_PATH = 'build/';
@@ -22,7 +21,7 @@ log.info('Starting task in mode : ' + process.env.NODE_ENV );
 /**
  * clean
  */
-function clean(){
+export function clean(){
   return del([
       _BUID_PATH + '**/*.*'
   ]);
@@ -30,28 +29,32 @@ function clean(){
 /**
  * images
  */
-function images(cb){
+export function images(){
   return gulp.src('./exports/assets/img/**/*.{' + _IMAGES_FORMATS + '}')
         .pipe(imagemin([
-    				imagemin.svgo({plugins: [{removeViewBox: true}]})
-    		], {
-    			verbose: true
-    		}))
-        .pipe(imageResize({
-          width : 1200,
-          height : 1200,
-          crop : false,
-          upscale : false
-        }))
+          gifsicle({interlaced: true}),
+          mozjpeg({quality: 75, progressive: true}),
+          optipng({optimizationLevel: 5}),
+          svgo({
+            plugins: [
+              {
+                name: 'removeViewBox',
+                active: true
+              },
+              {
+                name: 'cleanupIDs',
+                active: false
+              }
+            ]
+          })
+        ]))
         .pipe(gulp.dest(_BUID_PATH));
-
-  cb();
 }
 /**
  * scripts
  *
  */
-function scripts(cb){
+export function scripts(){
   return gulp.src('./exports/**/*.js')
           .pipe(gulp.dest(_BUID_PATH));
 }
@@ -61,13 +64,12 @@ function scripts(cb){
  * https://www.npmjs.com/package/gulp-htmlmin
  */
 
-let htmlmin = require('gulp-htmlmin');
+import htmlmin from 'gulp-htmlmin';
 
-function html(cb) {
+export function html() {
   return gulp.src('./exports/**/*.html')
       .pipe(htmlmin({collapseWhitespace: true}))
       .pipe(gulp.dest(_BUID_PATH));
-  cb();
 }
 /**
  * styles
@@ -75,17 +77,18 @@ function html(cb) {
  * http://cssnext.io/postcss/#gulp-postcss
  *
  */
-let postcss = require("gulp-postcss");
-//var partialImport = require("postcss-partial-import");
-let cssnext = require("postcss-cssnext");
+import postcss from 'gulp-postcss';
+import postcssImport from 'postcss-import';
+// https://github.com/postcss/postcss-url
+import postcssUrl from 'postcss-url';
 // http://putaindecode.io/fr/articles/css/preprocesseurs/cssnext/
-function styles(cb) {
+import cssnext from 'postcss-cssnext';
+export function styles() {
   return gulp.src('./exports/**/*.css')
       .pipe(postcss([
-        require("postcss-import")(),
-        // https://github.com/postcss/postcss-url
-        require("postcss-url")(),
-        require("postcss-cssnext")({
+        postcssImport(),
+        postcssUrl(),
+        cssnext({
           browsers: ["> 1%","last 2 versions"],
           features: {
             customProperties: {
@@ -94,12 +97,10 @@ function styles(cb) {
               preserve: "computed"
             }
           }
-        }),
+        })
       ]))
       .pipe(gulp.dest(_BUID_PATH));
-  cb();
 }
-
 
 // https://www.npmjs.com/package/browser-sync
 // var browserSync = require('browser-sync').create();
@@ -119,9 +120,4 @@ function styles(cb) {
 // });
 const build = gulp.series(clean, gulp.parallel(images,scripts,styles,html));
 
-exports.scripts = scripts;
-exports.html = html;
-exports.styles = styles;
-exports.images = images;
-exports.build = build;
-exports.default = build;
+export default build;
