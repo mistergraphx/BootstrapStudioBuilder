@@ -1,9 +1,8 @@
-const gulp = require("gulp");
-const log  = require('fancy-log');
-const del = require('del');
-
-const imagemin = require('gulp-imagemin');
-const imageResize = require('gulp-image-resize');
+import gulp from 'gulp';
+import log from 'fancy-log';
+import del from 'del';
+import imagemin, {gifsicle, mozjpeg, optipng, svgo} from 'gulp-imagemin';
+import imageResize from 'gulp-image-resize';
 
 global._SRC_PATH = 'exports/';
 global._BUID_PATH = 'build/';
@@ -33,16 +32,22 @@ function clean(){
 function images(cb){
   return gulp.src('./exports/assets/img/**/*.{' + _IMAGES_FORMATS + '}')
         .pipe(imagemin([
-    				imagemin.svgo({plugins: [{removeViewBox: true}]})
-    		], {
-    			verbose: true
-    		}))
-        .pipe(imageResize({
-          width : 1200,
-          height : 1200,
-          crop : false,
-          upscale : false
-        }))
+          gifsicle({interlaced: true}),
+          mozjpeg({quality: 75, progressive: true}),
+          optipng({optimizationLevel: 5}),
+          svgo({
+            plugins: [
+              {
+                name: 'removeViewBox',
+                active: true
+              },
+              {
+                name: 'cleanupIDs',
+                active: false
+              }
+            ]
+          })
+        ]))
         .pipe(gulp.dest(_BUID_PATH));
 
   cb();
@@ -61,7 +66,7 @@ function scripts(cb){
  * https://www.npmjs.com/package/gulp-htmlmin
  */
 
-let htmlmin = require('gulp-htmlmin');
+import htmlmin from 'gulp-htmlmin';
 
 function html(cb) {
   return gulp.src('./exports/**/*.html')
@@ -75,9 +80,9 @@ function html(cb) {
  * http://cssnext.io/postcss/#gulp-postcss
  *
  */
-let postcss = require("gulp-postcss");
+import postcss from 'gulp-postcss';
 //var partialImport = require("postcss-partial-import");
-let cssnext = require("postcss-cssnext");
+import cssnext from 'postcss-cssnext';
 // http://putaindecode.io/fr/articles/css/preprocesseurs/cssnext/
 function styles(cb) {
   return gulp.src('./exports/**/*.css')
