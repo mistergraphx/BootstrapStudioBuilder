@@ -1,6 +1,6 @@
 import gulp from 'gulp';
 import log from 'fancy-log';
-import del from 'del';
+import {deleteAsync} from 'del';
 
 global._SRC_PATH = 'exports/';
 global._BUID_PATH = 'build/';
@@ -20,9 +20,7 @@ log.info('Starting task in mode : ' + process.env.NODE_ENV );
  * clean
  */
 export const clean = async () => {
-  return del([
-      _BUID_PATH + '**/*.*'
-  ]);
+  return deleteAsync([ `${_BUID_PATH}*/`]);
 }
 /**
  * images
@@ -33,8 +31,8 @@ export const images = async () => {
   const mozjpeg = (await import("imagemin-mozjpeg")).default;
   const optipng = (await import("imagemin-optipng")).default;
   const svgo = (await import("imagemin-svgo")).default;
-  //import imagemin, {gifsicle, mozjpeg, optipng, svgo} from 'gulp-imagemin';
-  return gulp.src('./exports/assets/img/**/*.{' + _IMAGES_FORMATS + '}')
+
+  return gulp.src(`./exports/assets/img/**/*.{${_IMAGES_FORMATS}}`)
         .pipe(imagemin([
           gifsicle({interlaced: true}),
           mozjpeg({quality: 75, progressive: true}),
@@ -123,5 +121,5 @@ export const styles = async () => {
 // 	gulp.watch('./exports/assets/**/*.css',['styles']);
 // });
 const build = gulp.series(clean, gulp.parallel(images,scripts,styles,html));
-// const build = gulp.series(clean);
+
 export default build;

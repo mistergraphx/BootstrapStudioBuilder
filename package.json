@@ -12,9 +12,18 @@
   },
   "license": "ISC",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "gulp",
+    "styles": "gulp styles",
+    "images": "gulp images",
+    "clean": "gulp clean"
+  },
   "dependencies": {
     "browser-sync": "^3.0.3",
-    "del": "^6.0.0",
+    "del": "^8.0.0",
     "fancy-log": "^2.0.0",
     "gulp": "^5.0.0",
     "gulp-htmlmin": "^5.0.1",
