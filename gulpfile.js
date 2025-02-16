@@ -1,6 +1,6 @@
 import gulp from 'gulp';
 import log from 'fancy-log';
-import {deleteAsync} from 'del';
+
 
 global._SRC_PATH = 'exports/';
 global._BUID_PATH = 'build/';
@@ -19,8 +19,11 @@ log.info('Starting task in mode : ' + process.env.NODE_ENV );
 /**
  * clean
  */
+import {deleteAsync} from 'del';
+
 export const clean = async () => {
-  return deleteAsync([ `${_BUID_PATH}*/`]);
+  const deletedPaths = await deleteAsync([ `${_BUID_PATH}`]);
+  log.info('Deleted files and directories:\n', deletedPaths.join('\n'));
 }
 /**
  * images
@@ -65,7 +68,6 @@ export const scripts = async () => {
  *
  * https://www.npmjs.com/package/gulp-htmlmin
  */
-
 import htmlmin from 'gulp-htmlmin';
 
 export const html = async () => {
@@ -80,27 +82,10 @@ export const html = async () => {
  *
  */
 import postcss from 'gulp-postcss';
-import postcssImport from 'postcss-import';
-// https://github.com/postcss/postcss-url
-import postcssUrl from 'postcss-url';
-// http://putaindecode.io/fr/articles/css/preprocesseurs/cssnext/
-import cssnext from 'postcss-cssnext';
+
 export const styles = async () => {
   return gulp.src('./exports/**/*.css')
-      .pipe(postcss([
-        postcssImport(),
-        postcssUrl(),
-        cssnext({
-          browsers: ["> 1%","last 2 versions"],
-          features: {
-            customProperties: {
-              // true: les var() sont conservée pour les navigateur les supportant et calculé en fallback
-              // 'computed' les var() sont calculées mais root est conservé
-              preserve: "computed"
-            }
-          }
-        })
-      ]))
+      .pipe(postcss({ to: _BUID_PATH }))
       .pipe(gulp.dest(_BUID_PATH));
 }
 

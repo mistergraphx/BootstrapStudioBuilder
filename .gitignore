@@ -16,6 +16,8 @@
 build/
 exports/
 
+postcss.config.js
+
 .sass-cache/**
 *.scssc
 .DS_Store
